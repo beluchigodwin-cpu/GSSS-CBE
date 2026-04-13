@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>WAEC CBT | English Objective (SS2) - Lagos Syllabus</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', 'Poppins', 'Roboto', sans-serif;
+            background: #eef2f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .waec-container {
+            width: 100%;
+            max-width: 1300px;
+            margin: 20px;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+        .waec-header {
+            background: linear-gradient(135deg, #0f3b2c 0%, #1b5e3f 100%);
+            color: white;
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .timer-badge {
+            background: #000000aa;
+            backdrop-filter: blur(4px);
+            padding: 8px 20px;
+            border-radius: 60px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+        }
+        .content-pane {
+            padding: 2rem;
+            min-height: 550px;
+        }
+        button, .btn {
+            background: #1e5a3c;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+        button:hover { background: #0f3b2c; transform: scale(0.97); }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #1e5a3c;
+            color: #1e5a3c;
+        }
+        .btn-outline:hover { background: #1e5a3c; color: white; }
+        .btn-danger { background: #b91c1c; }
+        .btn-danger:hover { background: #991b1b; }
+        .btn-success { background: #15803d; }
+        .card {
+            background: #fefefe;
+            border-radius: 28px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e4e7eb;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 24px;
+            border: 1px solid #cbd5e1;
+            font-size: 1rem;
+            margin-top: 6px;
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .question-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .q-circle {
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            border-radius: 50%;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .q-circle.active {
+            background: #1e5a3c;
+            color: white;
+            border: 2px solid #ffc107;
+        }
+        .q-circle.flagged {
+            background: #ffc107;
+            color: #1e2a2a;
+        }
+        .q-circle.answered {
+            background: #4c9f70;
+            color: white;
+        }
+        .instruction-box {
+            background: #fef9e3;
+            border-left: 6px solid #ffc107;
+            padding: 1.5rem;
+            border-radius: 24px;
+            white-space: pre-wrap;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            background: #f9fafb;
+            border-radius: 60px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+        }
+        .option.selected {
+            background: #dcfce7;
+            border-color: #15803d;
+        }
+        .option input {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            cursor: pointer;
+        }
+        hr { margin: 15px 0; }
+        .student-item {
+            background: #f9f9fb;
+            border-radius: 20px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        @media (max-width: 700px) {
+            .content-pane { padding: 1rem; }
+            .option { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+<div id="appRoot" class="waec-container">
+    <div class="waec-header">
+        <div>
+            <h2>🏛️ GSSS CB-WASSCE</h2>
+            <p>English Language (Objective) | SS2 Second Term | Lagos Syllabus</p>
+        </div>
+        <div id="globalTimer" class="timer-badge" style="display: none;">--:--:--</div>
+    </div>
+    <div class="content-pane" id="mainContent"></div>
+</div>
+
+<script>
+    // ======================== 50 PRE-LOADED OBJECTIVE QUESTIONS (WAEC/LAGOS SYLLABUS) ========================
+    const DEFAULT_OBJECTIVE_QUESTIONS = [
+        { id: 1, text: "Choose the word that is most nearly opposite in meaning to 'TRANSIENT'.", options: ["Permanent", "Fleeting", "Brief", "Temporary"], answer: 0 },
+        { id: 2, text: "In the sentence 'The principal admonished the students', the word 'admonished' means?", options: ["Praised", "Scolded gently", "Expelled", "Awarded"], answer: 1 },
+        { id: 3, text: "Identify the odd one out: Noun, Verb, Adverb, Conjunction, Preposition.", options: ["Conjunction", "Preposition", "Adverb", "None"], answer: 3 },
+        { id: 4, text: "Choose the correct spelling: Accommodation, Acommodation, Accomodation, Acomodation.", options: ["Accommodation", "Acommodation", "Accomodation", "Acomodation"], answer: 0 },
+        { id: 5, text: "The phrase 'a piece of cake' means?", options: ["Difficult task", "Easy task", "Delicious food", "Expensive item"], answer: 1 },
+        { id: 6, text: "Which of the following is a vowel sound in English?", options: ["/p/", "/b/", "/i:/", "/t/"], answer: 2 },
+        { id: 7, text: "Select the appropriate question tag: 'Nobody called, _____?'", options: ["did they?", "didn't they?", "did he?", "didn't he?"], answer: 0 },
+        { id: 8, text: "The synonym of 'BENEVOLENT' is?", options: ["Kind", "Cruel", "Greedy", "Selfish"], answer: 0 },
+        { id: 9, text: "Identify the figure of speech: 'The wind whispered through the trees.'", options: ["Simile", "Metaphor", "Personification", "Hyperbole"], answer: 2 },
+        { id: 10, text: "Choose the correct preposition: 'She is interested ____ learning French.'", options: ["in", "on", "at", "for"], answer: 0 },
+        { id: 11, text: "Which word is a noun? 'Beautiful', 'Run', 'Happiness', 'Quickly'.", options: ["Beautiful", "Run", "Happiness", "Quickly"], answer: 2 },
+        { id: 12, text: "Antonym of 'DILIGENT' is?", options: ["Hardworking", "Lazy", "Energetic", "Prompt"], answer: 1 },
+        { id: 13, text: "Select the correctly punctuated sentence.", options: ["He said, 'I am tired.'", "He said 'I am tired'.", "He said I am tired.", "He said, I am tired."], answer: 0 },
+        { id: 14, text: "The plural of 'analysis' is?", options: ["Analyses", "Analysi", "Analysises", "Analysiss"], answer: 0 },
+        { id: 15, text: "Choose the appropriate tense: 'By next week, they _____ the project.'", options: ["will complete", "will have completed", "complete", "completed"], answer: 1 },
+        { id: 16, text: "Which of these is a diphthong?", options: ["/i:/", "/eɪ/", "/p/", "/t/"], answer: 1 },
+        { id: 17, text: "Identify the error: 'Neither the manager nor his assistants was present.'", options: ["Neither", "nor", "was", "present"], answer: 2 },
+        { id: 18, text: "Meaning of 'idiom' 'to bury the hatchet' means?", options: ["Start a war", "Make peace", "Hide evidence", "Dig a hole"], answer: 1 },
+        { id: 19, text: "Choose the correct spelling: 'Receive', 'Recieve', 'Receeve', 'Reseive'.", options: ["Receive", "Recieve", "Receeve", "Reseive"], answer: 0 },
+        { id: 20, text: "The word 'audible' means?", options: ["Can be heard", "Cannot be heard", "Visible", "Invisible"], answer: 0 },
+        { id: 21, text: "Which of the following is a conjunction?", options: ["and", "beautifully", "run", "under"], answer: 0 },
+        { id: 22, text: "Antonym of 'optimistic' is?", options: ["Hopeful", "Pessimistic", "Cheerful", "Bright"], answer: 1 },
+        { id: 23, text: "Choose the correct form: 'If I _____ you, I would apologise.'", options: ["was", "were", "am", "is"], answer: 1 },
+        { id: 24, text: "Identify the onomatopoeic word: 'Buzz', 'Run', 'Think', 'Sleep'.", options: ["Buzz", "Run", "Think", "Sleep"], answer: 0 },
+        { id: 25, text: "The abbreviation 'e.g.' stands for?", options: ["Example given", "Exempli gratia", "Extra good", "Essential guide"], answer: 1 },
+        { id: 26, text: "Choose the word that rhymes with 'great':", options: ["Bread", "Meat", "Gate", "Net"], answer: 2 },
+        { id: 27, text: "Which sentence is in active voice?", options: ["The cake was eaten by John.", "John ate the cake.", "The cake is being eaten.", "The cake had been eaten."], answer: 1 },
+        { id: 28, text: "The synonym of 'abundant' is?", options: ["Scarce", "Plentiful", "Rare", "Limited"], answer: 1 },
+        { id: 29, text: "Choose the correct article: 'He is ___ university student.'", options: ["a", "an", "the", "none"], answer: 0 },
+        { id: 30, text: "Identify the adjective in: 'The quick brown fox jumps.'", options: ["quick", "jumps", "fox", "the"], answer: 0 },
+        { id: 31, text: "What is the past tense of 'swim'?", options: ["Swam", "Swum", "Swimmed", "Swiming"], answer: 0 },
+        { id: 32, text: "Choose the correct question: 'You like chocolate, _____?'", options: ["do you", "don't you", "isn't it", "aren't you"], answer: 1 },
+        { id: 33, text: "Meaning: 'To be in the same boat' means?", options: ["Share same situation", "Travel together", "Fight", "Compete"], answer: 0 },
+        { id: 34, text: "Which is a proper noun? 'city', 'Lagos', 'river', 'mountain'.", options: ["city", "Lagos", "river", "mountain"], answer: 1 },
+        { id: 35, text: "Choose the correct adverb: 'She sings _____.'", options: ["beautiful", "beautifully", "beauty", "beautify"], answer: 1 },
+        { id: 36, text: "Antonym of 'increase' is?", options: ["Decrease", "Expand", "Grow", "Enlarge"], answer: 0 },
+        { id: 37, text: "Identify the literary device: 'O mighty Caesar! dost thou lie so low?'", options: ["Apostrophe", "Alliteration", "Irony", "Paradox"], answer: 0 },
+        { id: 38, text: "Select the correctly spelt word: 'Necessary', 'Neccessary', 'Necesary', 'Necassary'.", options: ["Necessary", "Neccessary", "Necesary", "Necassary"], answer: 0 },
+        { id: 39, text: "Which word is a verb? 'beauty', 'beautify', 'beautiful', 'beautifully'.", options: ["beauty", "beautify", "beautiful", "beautifully"], answer: 1 },
+        { id: 40, text: "The expression 'et cetera' means?", options: ["And so on", "And others", "All of the above", "None"], answer: 2 },
+        { id: 41, text: "Choose the correct indirect speech: He said, 'I am happy.'", options: ["He said he was happy.", "He said I am happy.", "He says he is happy.", "He told I am happy."], answer: 0 },
+        { id: 42, text: "Identify the stressed syllable in 'photograph'?", options: ["PHO", "to", "graph"], answer: 0 },
+        { id: 43, text: "Which is an example of alliteration?", options: ["Peter Piper picked peppers", "He is as brave as a lion", "Life is a dream", "Boom! Crash!"], answer: 0 },
+        { id: 44, text: "The synonym of 'fragile' is?", options: ["Strong", "Delicate", "Rough", "Solid"], answer: 1 },
+        { id: 45, text: "Select the appropriate conjunction: 'He is poor _____ honest.'", options: ["but", "and", "or", "so"], answer: 0 },
+        { id: 46, text: "The plural of 'cactus' is?", options: ["Cacti", "Cactuses", "Cactus", "Cactodes"], answer: 0 },
+        { id: 47, text: "Meaning of 'proverb': 'A stitch in time saves nine' means?", options: ["Preventive action", "Sewing is good", "Delay work", "Save money"], answer: 0 },
+        { id: 48, text: "Choose the correct relative pronoun: 'The man _____ called you is my uncle.'", options: ["who", "which", "whom", "whose"], answer: 0 },
+        { id: 49, text: "Identify the tense: 'She has finished her homework.'", options: ["Past perfect", "Present perfect", "Simple past", "Future perfect"], answer: 1 },
+        { id: 50, text: "Which is a prefix meaning 'against'?", options: ["Anti-", "Pre-", "Sub-", "Post-"], answer: 0 }
+    ];
+
+    // Storage keys
+    const STORAGE = {
+        STUDENTS: 'obj_cbt_students',
+        QUESTIONS: 'obj_cbt_questions',
+        INSTRUCTIONS: 'obj_cbt_instructions'
+    };
+
+    function initStorage() {
+        if (!localStorage.getItem(STORAGE.STUDENTS)) localStorage.setItem(STORAGE.STUDENTS, JSON.stringify([]));
+        if (!localStorage.getItem(STORAGE.QUESTIONS)) localStorage.setItem(STORAGE.QUESTIONS, JSON.stringify(DEFAULT_OBJECTIVE_QUESTIONS));
+        if (!localStorage.getItem(STORAGE.INSTRUCTIONS)) localStorage.setItem(STORAGE.INSTRUCTIONS, 
+            "WEST AFRICAN SENIOR SCHOOL CERTIFICATE EXAMINATION (WASSCE)\nENGLISH LANGUAGE (OBJECTIVE) – SS2 SECOND TERM\nLAGOS STATE SYLLABUS\n\nINSTRUCTIONS:\n1. This paper consists of 50 multiple-choice questions.\n2. Each question has four options A-D. Choose the correct answer.\n3. Time allowed: 30 minutes.\n4. Do not refresh or leave the exam screen – any attempt will auto-submit.\n5. Fullscreen mode is mandatory.\n6. Mark your answers by clicking on the options.\n\nRead each question carefully.\n\nBEST OF LUCK!");
+    }
+    initStorage();
+
+    function getStudents() { return JSON.parse(localStorage.getItem(STORAGE.STUDENTS)); }
+    function saveStudents(s) { localStorage.setItem(STORAGE.STUDENTS, JSON.stringify(s)); }
+    function getQuestions() { return JSON.parse(localStorage.getItem(STORAGE.QUESTIONS)); }
+    function saveQuestions(q) { localStorage.setItem(STORAGE.QUESTIONS, JSON.stringify(q)); }
+    function getInstructions() { return localStorage.getItem(STORAGE.INSTRUCTIONS); }
+    function saveInstructions(i) { localStorage.setItem(STORAGE.INSTRUCTIONS, i); }
+
+    // Global state
+    let currentView = "login";
+    let examInterval = null, instructionInterval = null;
+    let examActive = false, examSubmitted = false;
+    let currentStudent = null;
+    let questionsArray = [];
+    let answers = [];          // store selected index per question (-1 if none)
+    let flaggedStatus = [];
+    let visitedStatus = [];
+    let currentQIndex = 0;
+    let remainingSeconds = 1800; // 30 mins
+    let instructionRemaining = 60;
+    let antiCheatCleanup = null;
+
+    const mainDiv = document.getElementById('mainContent');
+    const timerDiv = document.getElementById('globalTimer');
+
+    // Helper
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    // ---------- RENDER LOGIN ----------
+    function renderLogin() {
+        if (examInterval) clearInterval(examInterval);
+        if (instructionInterval) clearInterval(instructionInterval);
+        examActive = false;
+        timerDiv.style.display = 'none';
+        currentView = "login";
+        mainDiv.innerHTML = `
+            <div class="card" style="max-width: 500px; margin: 0 auto;">
+                <h2>🔐 WAEC CBT (OBJECTIVE)</h2>
+                <p style="margin: 15px 0;">Enter your credentials (provided by admin)</p>
+                <label>Full Name</label>
+                <input type="text" id="studentName" placeholder="e.g., Adebayo Olamide" autocomplete="off">
+                <label style="margin-top: 15px;">Exam Password</label>
+                <input type="password" id="studentPwd" placeholder="Unique password">
+                <button id="loginStudentBtn" style="margin-top: 25px; width: 100%;">Start Examination</button>
+                <hr>
+                <button id="gotoAdminBtn" class="btn-outline" style="width: 100%;">🔧 Admin Portal</button>
+                <p style="margin-top: 15px; font-size: 12px;">Admin login: enigma123</p>
+            </div>
+        `;
+        document.getElementById('loginStudentBtn').addEventListener('click', () => {
+            const name = document.getElementById('studentName').value.trim();
+            const pwd = document.getElementById('studentPwd').value;
+            const students = getStudents();
+            const found = students.find(s => s.name.toLowerCase() === name.toLowerCase() && s.password === pwd);
+            if (found) {
+                currentStudent = found;
+                goToInstruction();
+            } else {
+                alert("❌ Invalid name or password. Contact admin.");
+            }
+        });
+        document.getElementById('gotoAdminBtn').addEventListener('click', () => showAdminAuth());
+    }
+
+    function showAdminAuth() {
+        mainDiv.innerHTML = `
+            <div class="card" style="max-width: 450px; margin: 0 auto;">
+                <h2>🔒 Admin Login</h2>
+                <input type="password" id="adminPass" placeholder="Enter admin password">
+                <button id="adminAuthBtn" style="margin-top: 20px;">Login</button>
+            </div>
+        `;
+        document.getElementById('adminAuthBtn').addEventListener('click', () => {
+            if (document.getElementById('adminPass').value === 'enigma123') renderAdminPanel();
+            else alert("Wrong admin password!");
+        });
+    }
+
+    // ---------- ADMIN PANEL ----------
+    function renderAdminPanel() {
+        timerDiv.style.display = 'none';
+        currentView = "admin";
+        const students = getStudents();
+        const questions = getQuestions();
+        const instructions = getInstructions();
+        mainDiv.innerHTML = `
+            <div class="flex-between"><h2>📋 Admin Dashboard (Objective CBT)</h2><button id="logoutAdminBtn" class="btn-danger">Logout</button></div>
+            <div class="card">
+                <h3>👥 Manage Students (Each unique password)</h3>
+                <div class="flex-between"><input id="studentNameInput" placeholder="Full name" style="flex:2"><input id="studentPwdInput" placeholder="Password" style="flex:1"><button id="addStudentBtn" class="btn-success">+ Add</button></div>
+                <div id="studentsList" style="margin-top: 20px;"></div>
+            </div>
+            <div class="card">
+                <h3>📚 50 Objective Questions (Editable)</h3>
+                <button id="addQuestionBtn" class="btn-success">+ Add New Question</button>
+                <div id="questionsList" style="margin-top: 20px; max-height: 400px; overflow-y: auto;"></div>
+            </div>
+            <div class="card">
+                <h3>📜 Exam Instructions</h3>
+                <textarea id="instructionsEditor" rows="6">${escapeHtml(instructions)}</textarea>
+                <button id="saveInstructionsBtn" style="margin-top: 12px;">Save Instructions</button>
+            </div>
+        `;
+        function refreshStudents() {
+            const container = document.getElementById('studentsList');
+            if(!container) return;
+            const list = getStudents();
+            if(list.length===0) { container.innerHTML='<p>No students added yet.</p>'; return; }
+            container.innerHTML = list.map((s,idx)=>`<div class="student-item"><div><strong>${escapeHtml(s.name)}</strong> (pwd: ${s.password})</div><button class="delStudBtn" data-idx="${idx}" style="background:#b91c1c;">Delete</button></div>`).join('');
+            document.querySelectorAll('.delStudBtn').forEach(btn=>{
+                btn.addEventListener('click',()=>{
+                    const idx = parseInt(btn.dataset.idx);
+                    let all = getStudents();
+                    if(confirm(`Delete ${all[idx].name}?`)){ all.splice(idx,1); saveStudents(all); refreshStudents(); }
+                });
+            });
+        }
+        document.getElementById('addStudentBtn').addEventListener('click',()=>{
+            const name = document.getElementById('studentNameInput').value.trim();
+            const pwd = document.getElementById('studentPwdInput').value.trim();
+            if(!name || !pwd) { alert("Both required"); return; }
+            let all = getStudents();
+            if(all.some(s=>s.name.toLowerCase()===name.toLowerCase())){ alert("Student exists"); return; }
+            all.push({id:Date.now(), name, password:pwd});
+            saveStudents(all);
+            document.getElementById('studentNameInput').value='';
+            document.getElementById('studentPwdInput').value='';
+            refreshStudents();
+        });
+        function refreshQuestions() {
+            const container = document.getElementById('questionsList');
+            if(!container) return;
+            const qs = getQuestions();
+            container.innerHTML = qs.map((q,idx)=>`
+                <div style="border-bottom:1px solid #ddd; padding:12px;">
+                    <strong>Q${idx+1}:</strong> ${escapeHtml(q.text.substring(0,100))}...<br>
+                    Options: ${q.options.map((o,i)=>`${String.fromCharCode(65+i)}: ${escapeHtml(o.substring(0,30))}`).join(' | ')}<br>
+                    <span style="color:#15803d;">Answer: ${String.fromCharCode(65+q.answer)}</span>
+                    <div style="margin-top:8px;"><button class="editQ" data-idx="${idx}" style="background:#2563eb;">Edit</button> <button class="delQ" data-idx="${idx}" style="background:#b91c1c;">Delete</button></div>
+                </div>
+            `).join('');
+            document.querySelectorAll('.editQ').forEach(btn=>{
+                btn.addEventListener('click',()=>{ editQuestion(parseInt(btn.dataset.idx)); });
+            });
+            document.querySelectorAll('.delQ').forEach(btn=>{
+                btn.addEventListener('click',()=>{
+                    let idx = parseInt(btn.dataset.idx);
+                    if(confirm("Delete this question?")){ let all = getQuestions(); all.splice(idx,1); saveQuestions(all); refreshQuestions(); }
+                });
+            });
+        }
+        function editQuestion(idx){
+            const q = getQuestions()[idx];
+            const newText = prompt("Edit question text:", q.text);
+            if(newText===null) return;
+            let newOpts = [];
+            for(let i=0;i<4;i++){ let val = prompt(`Option ${String.fromCharCode(65+i)}:`, q.options[i]); if(val===null) return; newOpts.push(val); }
+            let newAns = parseInt(prompt(`Correct answer index (0-3, current: ${q.answer}):`, q.answer));
+            if(isNaN(newAns) || newAns<0 || newAns>3) newAns = q.answer;
+            let all = getQuestions();
+            all[idx] = {...all[idx], text:newText, options:newOpts, answer:newAns};
+            saveQuestions(all);
+            refreshQuestions();
+        }
+        document.getElementById('addQuestionBtn').addEventListener('click',()=>{
+            let text = prompt("Enter question text:");
+            if(!text) return;
+            let opts=[];
+            for(let i=0;i<4;i++){ let o = prompt(`Option ${String.fromCharCode(65+i)}:`); if(!o) return; opts.push(o); }
+            let ans = parseInt(prompt("Correct answer index (0-3):",0));
+            if(isNaN(ans) || ans<0 || ans>3) ans=0;
+            let all = getQuestions();
+            all.push({id:Date.now(), text, options:opts, answer:ans});
+            saveQuestions(all);
+            refreshQuestions();
+        });
+        document.getElementById('saveInstructionsBtn').addEventListener('click',()=>{
+            saveInstructions(document.getElementById('instructionsEditor').value);
+            alert("Instructions saved");
+        });
+        document.getElementById('logoutAdminBtn').addEventListener('click',()=>renderLogin());
+        refreshStudents();
+        refreshQuestions();
+    }
+
+    // Instruction page
+    function goToInstruction() {
+        clearInterval(instructionInterval);
+        instructionRemaining = 60;
+        timerDiv.style.display = 'flex';
+        timerDiv.innerText = "⏱️ 01:00";
+        const instructions = getInstructions();
+        mainDiv.innerHTML = `
+            <div class="card">
+                <h2>📖 INSTRUCTION PAGE (1 minute)</h2>
+                <div class="instruction-box">${escapeHtml(instructions).replace(/\n/g,'<br>')}</div>
+                <div class="flex-between" style="margin-top:28px;">
+                    <span>Exam starts in: <strong id="instructionTimerSpan" style="font-size:1.8rem;">01:00</strong></span>
+                    <button id="forceStartBtn" disabled>Wait for timer</button>
+                </div>
+            </div>
+        `;
+        instructionInterval = setInterval(()=>{
+            if(instructionRemaining<=0){ clearInterval(instructionInterval); startExam(); }
+            else{
+                instructionRemaining--;
+                let mins = Math.floor(instructionRemaining/60);
+                let secs = instructionRemaining%60;
+                timerDiv.innerText = `⏱️ ${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+                let span = document.getElementById('instructionTimerSpan');
+                if(span) span.innerText = timerDiv.innerText.slice(3);
+                if(instructionRemaining===0) startExam();
+            }
+        },1000);
+        let check = setInterval(()=>{
+            if(instructionRemaining<=0){
+                let btn = document.getElementById('forceStartBtn');
+                if(btn){ btn.disabled=false; btn.innerText="Start Now"; btn.style.background="#15803d"; btn.onclick=()=>{clearInterval(instructionInterval); startExam();}; }
+                clearInterval(check);
+            }
+        },200);
+    }
+
+    function startExam(){
+        clearInterval(instructionInterval);
+        questionsArray = getQuestions();
+        if(questionsArray.length===0){ alert("No questions! Admin must add."); renderLogin(); return; }
+        answers = new Array(questionsArray.length).fill(-1);
+        flaggedStatus = new Array(questionsArray.length).fill(false);
+        visitedStatus = new Array(questionsArray.length).fill(false);
+        currentQIndex = 0;
+        visitedStatus[0]=true;
+        remainingSeconds = 1800; // 30 minutes
+        examSubmitted = false;
+        examActive = true;
+        timerDiv.style.display = 'flex';
+        updateTimerDisplay();
+        if(examInterval) clearInterval(examInterval);
+        examInterval = setInterval(()=>{
+            if(!examActive || examSubmitted) return;
+            if(remainingSeconds<=0){ clearInterval(examInterval); submitExam("TIME EXPIRED"); }
+            else{ remainingSeconds--; updateTimerDisplay(); }
+        },1000);
+        renderObjectiveExam();
+        enforceFullscreenAntiCheat();
+    }
+
+    function updateTimerDisplay(){
+        let mins = Math.floor(remainingSeconds/60);
+        let secs = remainingSeconds%60;
+        timerDiv.innerText = `⏱️ ${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+    }
+
+    function renderObjectiveExam(){
+        if(!examActive || examSubmitted) return;
+        const q = questionsArray[currentQIndex];
+        const selectedIdx = answers[currentQIndex];
+        mainDiv.innerHTML = `
+            <div id="examContainer">
+                <div class="flex-between"><h3>Question ${currentQIndex+1} of ${questionsArray.length}</h3><div class="toggle-flag"><span>🚩 Flag for review</span><input type="checkbox" id="flagToggle" ${flaggedStatus[currentQIndex] ? 'checked':''}></div></div>
+                <div class="card"><div style="font-size:1.1rem;">${escapeHtml(q.text)}</div><div style="margin-top:20px;">${q.options.map((opt,i)=>`<div class="option ${selectedIdx===i ? 'selected':''}" data-optidx="${i}"><input type="radio" name="answer" value="${i}" ${selectedIdx===i ? 'checked':''}><span>${String.fromCharCode(65+i)}. ${escapeHtml(opt)}</span></div>`).join('')}</div></div>
+                <div class="flex-between"><button id="prevBtn" ${currentQIndex===0 ? 'disabled':''}>◀ Previous</button><button id="nextBtn" ${currentQIndex===questionsArray.length-1 ? 'disabled':''}>Next ▶</button><button id="submitBtn" class="btn-danger">Submit Exam</button></div>
+                <div class="card"><h4>Question Palette</h4><div class="question-nav" id="navCircles"></div></div>
+            </div>
+        `;
+        document.querySelectorAll('.option').forEach(optDiv=>{
+            optDiv.addEventListener('click',()=>{
+                let idx = parseInt(optDiv.dataset.optidx);
+                answers[currentQIndex] = idx;
+                renderObjectiveExam();
+            });
+        });
+        document.getElementById('flagToggle')?.addEventListener('change',(e)=>{ flaggedStatus[currentQIndex]=e.target.checked; renderNavCircles(); });
+        document.getElementById('prevBtn')?.addEventListener('click',()=>{ if(currentQIndex>0){ currentQIndex--; visitedStatus[currentQIndex]=true; renderObjectiveExam(); } });
+        document.getElementById('nextBtn')?.addEventListener('click',()=>{ if(currentQIndex<questionsArray.length-1){ currentQIndex++; visitedStatus[currentQIndex]=true; renderObjectiveExam(); } });
+        document.getElementById('submitBtn')?.addEventListener('click',()=>{ if(confirm("Submit exam?")) submitExam("Submitted by candidate"); });
+        renderNavCircles();
+    }
+
+    function renderNavCircles(){
+        let nav = document.getElementById('navCircles');
+        if(!nav) return;
+        nav.innerHTML = questionsArray.map((_,idx)=>{
+            let cls = 'q-circle';
+            if(idx===currentQIndex) cls+=' active';
+            if(flaggedStatus[idx]) cls+=' flagged';
+            else if(answers[idx]!==-1) cls+=' answered';
+            return `<div class="${cls}" data-idx="${idx}">${idx+1}</div>`;
+        }).join('');
+        document.querySelectorAll('.q-circle').forEach(el=>{
+            el.addEventListener('click',()=>{
+                currentQIndex = parseInt(el.dataset.idx);
+                visitedStatus[currentQIndex]=true;
+                renderObjectiveExam();
+            });
+        });
+    }
+
+    function enforceFullscreenAntiCheat(){
+        document.documentElement.requestFullscreen().catch(e=>console.warn);
+        const visHandler = ()=>{ if(examActive && !examSubmitted && document.hidden) submitExam("CHEATING: Tab/window switch"); };
+        const fsHandler = ()=>{ if(examActive && !examSubmitted && !document.fullscreenElement) submitExam("CHEATING: Exited fullscreen"); };
+        const keyBlock = (e)=>{ if(examActive && !examSubmitted && (e.key==='F12' || (e.ctrlKey && (e.key==='u'||e.key==='U'||e.key==='i'||e.key==='I')) || (e.ctrlKey && e.shiftKey && e.key==='I') || e.key==='Escape')){ e.preventDefault(); submitExam("CHEATING: Devtools/escape"); } };
+        const ctxBlock = (e)=>{ if(examActive && !examSubmitted) e.preventDefault(); };
+        document.addEventListener('visibilitychange', visHandler);
+        document.addEventListener('fullscreenchange', fsHandler);
+        window.addEventListener('keydown', keyBlock);
+        document.addEventListener('contextmenu', ctxBlock);
+        window.addEventListener('beforeunload', (e)=>{ if(examActive && !examSubmitted){ e.preventDefault(); e.returnValue=""; submitExam("Page close"); } });
+        antiCheatCleanup = ()=>{ document.removeEventListener('visibilitychange',visHandler); document.removeEventListener('fullscreenchange',fsHandler); window.removeEventListener('keydown',keyBlock); document.removeEventListener('contextmenu',ctxBlock); };
+    }
+
+    function submitExam(reason){
+        if(examSubmitted) return;
+        examSubmitted = true; examActive = false;
+        clearInterval(examInterval);
+        if(antiCheatCleanup) antiCheatCleanup();
+        if(document.fullscreenElement) document.exitFullscreen();
+        timerDiv.style.display = 'none';
+        let score = answers.reduce((sum,ans,idx)=> ans===questionsArray[idx].answer ? sum+1 : sum, 0);
+        mainDiv.innerHTML = `<div class="card" style="text-align:center;"><h2>✅ Exam Submitted</h2><p><strong>${escapeHtml(currentStudent?.name)}</strong></p><p>Reason: ${reason}</p><p>Score: ${score} / ${questionsArray.length}</p><button id="exitBtn" class="btn-success">Exit to Login</button></div>`;
+        document.getElementById('exitBtn')?.addEventListener('click',()=>renderLogin());
+    }
+
+    renderLogin();
+</script>
+</body>
+</html>
